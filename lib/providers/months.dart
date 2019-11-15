@@ -9,6 +9,15 @@ import '../models/http_exception.dart';
 class Months with ChangeNotifier {
   List<Month> _items = [];
 
+  String authToken;
+  String userId;
+
+  Months(
+    this.authToken,
+    this.userId,
+    this._items,
+  );
+
   List<Month> get items {
     return [..._items].reversed.toList();
   }
@@ -18,21 +27,21 @@ class Months with ChangeNotifier {
   }
 
   bool isMonthExists(int year, int number, bool _isUpdating) {
-    if (!_isUpdating) {
-      final month = _items.firstWhere(
-          (m) => m.year == year && m.number == number,
-          orElse: () => null);
-      if (month != null) {
-        return true;
-      }
-      return false;
-    } else {
-      return false;
-    }
+    // if (!_isUpdating) {
+    //   final month = _items.any((m) => m.year == year && m.number == number);
+    //   if (month != null) {
+    //     return true;
+    //   }
+    //   return false;
+    // } else {
+    //   return false;
+    // }
+    return false;
   }
 
   Future<void> fetchAndSetMonths(int currentYear) async {
-    const url = 'https://monthly-expenses-d56f8.firebaseio.com/months.json';
+    final url =
+        'https://monthly-expenses-d56f8.firebaseio.com/months.json?auth=$authToken&orderBy="userId"&equalTo="$userId"';
 
     try {
       final response = await http.get(url);
@@ -45,16 +54,22 @@ class Months with ChangeNotifier {
         return;
       }
 
-      extractedData.forEach((monthId, monthData) {
-        loadedMonths.add(Month(
-          id: monthId,
-          name: monthData['monthName'],
-          number: monthData['monthNumber'],
-          year: monthData['year'],
-          amount: monthData['amount'],
-          amountLeft: monthData['amountLeft'],
-          createdAt: DateTime.parse(monthData['createdAt']),
-        ));
+      extractedData.forEach((id, data) {
+        if (id == 'error') {
+          print('Error in fetch');
+          return;
+        }
+        loadedMonths.add(
+          Month(
+            id: id,
+            name: data['monthName'],
+            number: data['monthNumber'],
+            amount: data['amount'],
+            amountLeft: data['amountLeft'],
+            year: data['year'],
+            createdAt: DateTime.parse(data['createdAt']),
+          ),
+        );
       });
 
       if (currentYear == 1) {
@@ -66,16 +81,21 @@ class Months with ChangeNotifier {
         loadedMonths.sort((a, b) => a.year.compareTo(b.year));
         _items = loadedMonths;
       }
+      //print(loadedMonths.length);
 
       notifyListeners();
     } catch (error) {
+      //print('error here');
       throw error;
     }
   }
 
   Future<void> addMonth(Month month) async {
     try {
-      const url = 'https://monthly-expenses-d56f8.firebaseio.com/months.json';
+      final url =
+          'https://monthly-expenses-d56f8.firebaseio.com/months.json?auth=$authToken';
+
+     // month.userId = userId;
 
       if (isMonthExists(month.year, month.number, false)) {
         return;
@@ -90,6 +110,7 @@ class Months with ChangeNotifier {
           'amount': month.amount,
           'amountLeft': month.amount,
           'createdAt': createdAt.toIso8601String(),
+          'userId': userId,
         }),
       );
 
@@ -114,7 +135,7 @@ class Months with ChangeNotifier {
     final monthIndex = _items.indexWhere((m) => m.id == id);
     try {
       final url =
-          'https://monthly-expenses-d56f8.firebaseio.com/months/$id.json';
+          'https://monthly-expenses-d56f8.firebaseio.com/months/$id.json?auth=$authToken';
       if (isMonthExists(newMonth.year, newMonth.number, true)) {
         return;
       }
@@ -144,7 +165,7 @@ class Months with ChangeNotifier {
 
   Future<void> updateAmountLeft({String monthId, double amount}) async {
     final url =
-        'https://monthly-expenses-d56f8.firebaseio.com/months/$monthId.json';
+        'https://monthly-expenses-d56f8.firebaseio.com/months/$monthId.json?auth=$authToken';
 
     final monthIndex = _items.indexWhere((m) => m.id == monthId);
     try {
@@ -176,7 +197,8 @@ class Months with ChangeNotifier {
   }
 
   Future<void> deleteMonth(String id) async {
-    final url = 'https://monthly-expenses-d56f8.firebaseio.com/months/$id.json';
+    final url =
+        'https://monthly-expenses-d56f8.firebaseio.com/months/$id.json?auth=$authToken';
 
     final existingMonthIndex = _items.indexWhere((m) => m.id == id);
     var existingMonth = _items[existingMonthIndex];

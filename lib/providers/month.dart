@@ -8,6 +8,7 @@ class Month with ChangeNotifier {
   final double amountLeft;
   final int year;
   final DateTime createdAt;
+  String userId;
 
   Month({
     @required this.id,

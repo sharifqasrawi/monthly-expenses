@@ -1,9 +1,41 @@
-import 'package:flutter/material.dart';
+import 'dart:convert';
 
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../providers/auth.dart';
 import '../screens/month_add_screen.dart';
 import '../screens/months_screen.dart';
 
-class AppDrawer extends StatelessWidget {
+class AppDrawer extends StatefulWidget {
+  @override
+  _AppDrawerState createState() => _AppDrawerState();
+}
+
+class _AppDrawerState extends State<AppDrawer> {
+  var email = '';
+  var _isInit = true;
+
+  @override
+  void didChangeDependencies() {
+    if (_isInit) {
+      Future.delayed(Duration.zero).then((_) async {
+        var prefs = await SharedPreferences.getInstance();
+        if (prefs.containsKey('userData')) {
+          final extractedUserData =
+              json.decode(prefs.getString('userData')) as Map<String, Object>;
+
+          setState(() {
+            email = extractedUserData['email'];
+          });
+        }
+      });
+    }
+    _isInit = false;
+    super.didChangeDependencies();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -12,7 +44,17 @@ class AppDrawer extends StatelessWidget {
         child: Column(
           children: <Widget>[
             AppBar(
-              title: const Text('Hello !!'),
+              title: Row(
+                children: [
+                  Icon(Icons.supervisor_account),
+                  Text(
+                    ' $email',
+                    style: TextStyle(
+                      fontSize: 18,
+                    ),
+                  ),
+                ],
+              ),
               automaticallyImplyLeading: false,
             ),
             Divider(),
@@ -28,7 +70,8 @@ class AppDrawer extends StatelessWidget {
               leading: const Icon(Icons.calendar_view_day),
               title: const Text('All Months'),
               onTap: () {
-                Navigator.of(context).pushReplacementNamed(MonthsScreen.routeName);
+                Navigator.of(context)
+                    .pushReplacementNamed(MonthsScreen.routeName);
               },
             ),
             Divider(),
@@ -38,6 +81,19 @@ class AppDrawer extends StatelessWidget {
               onTap: () {
                 Navigator.of(context)
                     .pushReplacementNamed(MonthAddScreen.routeName);
+              },
+            ),
+            Divider(),
+            ListTile(
+              leading: Icon(Icons.exit_to_app),
+              title: Text('Logout'),
+              onTap: () {
+                Navigator.of(context).pop();
+                Navigator.of(context).pushReplacementNamed('/');
+
+                // Navigator.of(context)
+                //     .pushReplacementNamed(UserProductsScreen.routeName);
+                Provider.of<Auth>(context, listen: false).logout();
               },
             ),
           ],

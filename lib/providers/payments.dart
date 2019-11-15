@@ -9,6 +9,11 @@ import './payment.dart';
 class Payments with ChangeNotifier {
   List<Payment> _payments = [];
 
+  String authToken;
+  String userId;
+
+  Payments(this.authToken, this.userId, this._payments);
+
   List<Payment> get payments {
     return [..._payments];
   }
@@ -18,7 +23,7 @@ class Payments with ChangeNotifier {
   }
 
   Future<void> fetchAndSetPayments() async {
-    const url = 'https://monthly-expenses-d56f8.firebaseio.com/payments.json';
+    final url = 'https://monthly-expenses-d56f8.firebaseio.com/payments.json?auth=$authToken';
     try {
       final response = await http.get(url);
 
@@ -48,7 +53,7 @@ class Payments with ChangeNotifier {
   }
 
   Future<void> addPayment(Payment payment) async {
-    const url = 'https://monthly-expenses-d56f8.firebaseio.com/payments.json';
+    final url = 'https://monthly-expenses-d56f8.firebaseio.com/payments.json?auth=$authToken';
     try {
       final createdAt = DateTime.now();
       final response = await http.post(
@@ -81,7 +86,7 @@ class Payments with ChangeNotifier {
 
   Future<void> deletePayment(String id) async {
     final url =
-        'https://monthly-expenses-d56f8.firebaseio.com/payments/$id.json';
+        'https://monthly-expenses-d56f8.firebaseio.com/payments/$id.json?auth=$authToken';
 
     final existingPaymentIndex = _payments.indexWhere((p) => p.id == id);
     var existingPayment = _payments[existingPaymentIndex];
