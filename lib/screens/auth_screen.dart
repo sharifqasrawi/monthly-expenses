@@ -67,6 +67,7 @@ class AuthScreen extends StatelessWidget {
                         'Monthly Expenses',
                         style: TextStyle(
                           color: Colors.white,
+                          fontWeight: FontWeight.bold,
                           fontSize: 20,
                         ),
                       ),
@@ -206,6 +207,30 @@ class _AuthCardState extends State<AuthCard> {
     }
   }
 
+  String _validateEmail(String value) {
+    if (value.isEmpty) {
+      // The form is empty
+      return "Enter email address";
+    }
+    // This is just a regular expression for email addresses
+    String p = "[a-zA-Z0-9\+\.\_\%\-\+]{1,256}" +
+        "\\@" +
+        "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}" +
+        "(" +
+        "\\." +
+        "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25}" +
+        ")+";
+    RegExp regExp = new RegExp(p);
+
+    if (regExp.hasMatch(value)) {
+      // So, the email is valid
+      return null;
+    }
+
+    // The pattern of the email didn't match the regex above.
+    return 'Email is not valid';
+  }
+
   @override
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;
@@ -229,17 +254,15 @@ class _AuthCardState extends State<AuthCard> {
                 TextFormField(
                   decoration: InputDecoration(
                     labelText: 'E-Mail',
-                    labelStyle: TextStyle(color: Colors.white),
+                    labelStyle: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   style: TextStyle(color: Colors.white),
                   keyboardType: TextInputType.emailAddress,
                   //initialValue: _authData['email'] == null ? '' : _authData['email'] ?? '',
-                  validator: (value) {
-                    if (value.isEmpty || !value.contains('@')) {
-                      return 'Invalid email!';
-                    }
-                    return null;
-                  },
+                  validator: _validateEmail,
                   onSaved: (value) {
                     _authData['email'] = value;
                   },
@@ -247,10 +270,15 @@ class _AuthCardState extends State<AuthCard> {
                 TextFormField(
                   decoration: InputDecoration(
                     labelText: 'Password',
-                    labelStyle: TextStyle(color: Colors.white),
+                    labelStyle: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   obscureText: true,
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
                   controller: _passwordController,
                   // initialValue: _authData['password'] == null ? '' : _authData['password'] ?? '' ,
                   validator: (value) {
@@ -308,7 +336,11 @@ class _AuthCardState extends State<AuthCard> {
                       //   ),
                       RaisedButton(
                         child: Text(
-                            _authMode == AuthMode.Login ? 'LOGIN' : 'SIGN UP'),
+                          _authMode == AuthMode.Login ? 'LOGIN' : 'SIGN UP',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                         onPressed: () => _submit(false),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30),

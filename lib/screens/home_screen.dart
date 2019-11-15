@@ -153,7 +153,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                               height: 70,
                                             ),
                                             Text(
-                                              'NO MONTHS REGISTERD YET',
+                                              'CURRENT MONTH NOT FOUND',
                                               style: TextStyle(
                                                 fontSize: 20,
                                                 color: Colors.white,
@@ -164,7 +164,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                             ),
                                             RaisedButton(
                                               child: Text(
-                                                'ADD MONTH NOW',
+                                                'ADD NOW',
                                               ),
                                               onPressed: () {
                                                 Navigator.of(context)

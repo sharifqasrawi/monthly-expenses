@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+
 import './screens/months_screen.dart';
 import './screens/payments.screen.dart';
 import './screens/month_add_screen.dart';
@@ -41,6 +42,7 @@ class MyApp extends StatelessWidget {
         builder: (ctx, auth, _) => MaterialApp(
           title: 'Monthly Expenses',
           theme: ThemeData(
+            fontFamily: 'Raleway',
             primarySwatch: Colors.deepOrange,
             accentColor: Colors.deepPurpleAccent,
             textTheme: ThemeData.light().textTheme.copyWith(
