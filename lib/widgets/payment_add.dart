@@ -81,7 +81,7 @@ class _AddPaymentState extends State<AddPayment> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Color.fromRGBO(211, 214, 227, 0.9),
+      color: Color.fromRGBO(255, 199, 163, 0.9),
       padding: EdgeInsets.fromLTRB(
         10,
         10,

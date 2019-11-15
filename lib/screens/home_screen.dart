@@ -1,11 +1,15 @@
-import 'dart:math';
+//import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
+import '../providers/month.dart';
 import '../providers/months.dart';
 import '../widgets/drawer.dart';
-import 'months_screen.dart';
+import './month_add_screen.dart';
+//import './months_screen.dart';
+import './payments.screen.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -14,11 +18,22 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   var _isInit = true;
+  var _isLoading = false;
+  var monthName;
 
   @override
   void didChangeDependencies() {
     if (_isInit) {
-      Provider.of<Months>(context).fetchAndSetMonths(0);
+      setState(() {
+        _isLoading = true;
+      });
+      Provider.of<Months>(context, listen: false)
+          .fetchAndSetMonths(1)
+          .then((_) {
+        setState(() {
+          _isLoading = false;
+        });
+      });
     }
 
     _isInit = false;
@@ -27,8 +42,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // final month = Provider.of<Months>(context, listen: false).getCurrentMonth();
-    //print(month.name);
+    Month month;
+    if (!_isLoading) {
+      month = Provider.of<Months>(context, listen: false).getCurrentMonth();
+    }
 
     final deviceSize = MediaQuery.of(context).size;
     return Scaffold(
@@ -41,8 +58,7 @@ class _HomeScreenState extends State<HomeScreen> {
           Container(
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: NetworkImage(
-                    'https://www.diversebc.com.au/wp-content/uploads/2019/06/background-balance-commerce-583846.jpg'),
+                image: AssetImage('assets/images/bg.png'),
                 fit: BoxFit.cover,
               ),
               // gradient: LinearGradient(
@@ -92,69 +108,134 @@ class _HomeScreenState extends State<HomeScreen> {
                 // ),
                 Flexible(
                   flex: deviceSize.width > 500 ? 2 : 1,
-                  child: Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                    elevation: 8.0,
-                    color: Color.fromRGBO(79, 97, 176, 0.9),
-                    child: Container(
-                      height: 300,
-                      constraints: BoxConstraints(
-                        minHeight: 300,
-                      ),
-                      width: deviceSize.width * 0.75,
-                      padding: EdgeInsets.all(16.0),
-                      child: SingleChildScrollView(
-                        child: Column(
-                          children: <Widget>[
-                            Text(
-                              'November',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 22,
-                                  fontWeight: FontWeight.bold),
+                  child: _isLoading
+                      ? Center(
+                          child: CircularProgressIndicator(),
+                        )
+                      : Card(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          elevation: 8.0,
+                          color: Color.fromRGBO(240, 147, 86, 0.9),
+                          child: Container(
+                            height: 320,
+                            constraints: BoxConstraints(
+                              minHeight: 320,
                             ),
-                            Divider(
-                              color: Colors.white,
-                              thickness: 2,
+                            width: deviceSize.width * 0.75,
+                            padding: EdgeInsets.all(16.0),
+                            child: SingleChildScrollView(
+                              child: month == null
+                                  ? Container(
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: <Widget>[
+                                          SizedBox(
+                                            height: 70,
+                                          ),
+                                          Text(
+                                            'NO MONTHS REGISTERD YET',
+                                            style: TextStyle(
+                                              fontSize: 20,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            height: 20,
+                                          ),
+                                          RaisedButton(
+                                            child: Text(
+                                              'ADD MONTH NOW',
+                                            ),
+                                            onPressed: () {
+                                              Navigator.of(context)
+                                                  .pushReplacementNamed(
+                                                      MonthAddScreen.routeName);
+                                            },
+                                          ),
+                                        ],
+                                      ),
+                                    )
+                                  : Column(
+                                      children: <Widget>[
+                                        Text(
+                                          '${month.name}',
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 26,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        SizedBox(
+                                          height: 4,
+                                        ),
+                                        Text(
+                                          'Today: ${DateFormat("EEEE dd/MM/yyyy").format(DateTime.now())}',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 12,
+                                          ),
+                                        ),
+                                        Divider(
+                                          color: Colors.white,
+                                          thickness: 2,
+                                        ),
+                                        SizedBox(
+                                          height: 20,
+                                        ),
+                                        Text(
+                                          'Left: ${month.amountLeft.toStringAsFixed(2)}€',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 24,
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          height: 20,
+                                        ),
+                                        Text(
+                                          'Spent: ${(month.amount - month.amountLeft).toStringAsFixed(2)}€',
+                                          style: TextStyle(
+                                            color: Colors.lime,
+                                            fontSize: 22,
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          height: 20,
+                                        ),
+                                        Text(
+                                          'Income: ${month.amount.toStringAsFixed(2)}€',
+                                          style: TextStyle(
+                                            color: Colors.white38,
+                                            fontSize: 22,
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          height: 20,
+                                        ),
+                                        RaisedButton(
+                                          child: Text(
+                                            'Add Payment',
+                                            style:
+                                                TextStyle(color: Colors.white),
+                                          ),
+                                          color: Color.fromRGBO(
+                                              128, 134, 158, 0.8),
+                                          onPressed: () {
+                                            Navigator.of(context).pushNamed(
+                                              PaymentsScreen.routeName,
+                                              arguments: month.id,
+                                            );
+                                          },
+                                        ),
+                                      ],
+                                    ),
                             ),
-                            Text(
-                              'Left: 320.00€',
-                              style: TextStyle(
-                                color: Colors.lime,
-                                fontSize: 20,
-                              ),
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Text(
-                              'Spent: 100.00€',
-                              style: TextStyle(
-                                color: Colors.white70,
-                                fontSize: 20,
-                              ),
-                            ),
-                            SizedBox(
-                              height: 20,
-                            ),
-                            RaisedButton(
-                              child: Text(
-                                'All Months',
-                                style: TextStyle(color: Colors.white),
-                              ),
-                              color: Color.fromRGBO(128, 134, 158, 0.8),
-                              onPressed: () {
-                                Navigator.of(context).pushReplacementNamed(
-                                    MonthsScreen.routeName);
-                              },
-                            ),
-                          ],
+                          ),
                         ),
-                      ),
-                    ),
-                  ),
                 ),
               ],
             ),

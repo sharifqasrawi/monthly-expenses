@@ -45,20 +45,30 @@ class _PaymentsListState extends State<PaymentsList> {
 
   @override
   Widget build(BuildContext context) {
-    return widget.payments.length > 0
-        ? ListView.builder(
-            padding: const EdgeInsets.all(10),
-            itemCount: widget.payments.length,
-            itemBuilder: (ctx, idx) => ChangeNotifierProvider.value(
-              value: widget.payments[idx],
-              child: PaymentItem(),
+    return Container(
+      color: Colors.black38,
+      child: widget.payments.length > 0
+          ? ListView.builder(
+              padding: const EdgeInsets.all(10),
+              itemCount: widget.payments.length,
+              itemBuilder: (ctx, idx) => ChangeNotifierProvider.value(
+                value: widget.payments[idx],
+                child: PaymentItem(),
+              ),
+            )
+          : Center(
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(25),
+                  color: Colors.white60,
+                ),
+                padding: const EdgeInsets.all(10),
+                child: Text(
+                  'NO PAYMENTS YET',
+                  style: TextStyle(color: Theme.of(context).errorColor),
+                ),
+              ),
             ),
-          )
-        : Center(
-            child: Text(
-              'NO PAYMENTS YET',
-              style: TextStyle(color: Theme.of(context).errorColor),
-            ),
-          );
+    );
   }
 }

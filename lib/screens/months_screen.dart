@@ -44,8 +44,7 @@ class _MonthsScreenState extends State<MonthsScreen> {
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: NetworkImage(
-                'https://www.diversebc.com.au/wp-content/uploads/2019/06/background-balance-commerce-583846.jpg'),
+            image: AssetImage('assets/images/bg.png'),
             fit: BoxFit.cover,
           ),
           // gradient: LinearGradient(

@@ -10,12 +10,15 @@ class MonthsList extends StatelessWidget {
     final monthsContainer = Provider.of<Months>(context);
     final months = monthsContainer.items;
 
-    return ListView.builder(
-      padding: const EdgeInsets.all(10),
-      itemCount: months.length,
-      itemBuilder: (ctx, idx) => ChangeNotifierProvider.value(
-        value: months[idx],
-        child: MonthItem(),
+    return Container(
+      color: Colors.black38,
+      child: ListView.builder(
+        padding: const EdgeInsets.all(10),
+        itemCount: months.length,
+        itemBuilder: (ctx, idx) => ChangeNotifierProvider.value(
+          value: months[idx],
+          child: MonthItem(),
+        ),
       ),
     );
   }

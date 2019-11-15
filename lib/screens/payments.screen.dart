@@ -74,15 +74,19 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
       appBar: appBar,
       body: Container(
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              Color.fromRGBO(215, 117, 255, 1).withOpacity(0.5),
-              Color.fromRGBO(255, 188, 117, 1).withOpacity(0.9),
-            ],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            stops: [0, 1],
+          image: DecorationImage(
+            image: AssetImage('assets/images/bg.png'),
+            fit: BoxFit.cover,
           ),
+          // gradient: LinearGradient(
+          //   colors: [
+          //     Color.fromRGBO(215, 117, 255, 1).withOpacity(0.5),
+          //     Color.fromRGBO(255, 188, 117, 1).withOpacity(0.9),
+          //   ],
+          //   begin: Alignment.topLeft,
+          //   end: Alignment.bottomRight,
+          //   stops: [0, 1],
+          // ),
         ),
         child: RefreshIndicator(
           onRefresh: _fetchData,
@@ -104,7 +108,7 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
                       borderRadius: BorderRadius.circular(25),
                       child: Card(
                         elevation: 10,
-                        color: Color.fromRGBO(158, 170, 219, 1),
+                        color: Color.fromRGBO(250, 168, 115, 1),
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Row(
@@ -114,14 +118,14 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
                                 '${amountLeft.toStringAsFixed(2)}€',
                                 style: const TextStyle(
                                   fontSize: 28,
-                                  color: Colors.red,
+                                  color: Colors.white,
                                 ),
                               ),
                               Text(
                                 '${amount.toStringAsFixed(2)} €',
                                 style: const TextStyle(
                                   fontSize: 28,
-                                  color: Colors.green,
+                                  color: Colors.red,
                                 ),
                               ),
                             ],

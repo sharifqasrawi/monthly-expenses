@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'Monthly Expenses',
         theme: ThemeData(
-          primarySwatch: Colors.purple,
+          primarySwatch: Colors.deepOrange,
           accentColor: Colors.pinkAccent,
           textTheme: ThemeData.light().textTheme.copyWith(
                 title: TextStyle(

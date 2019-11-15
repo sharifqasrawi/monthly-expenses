@@ -197,9 +197,10 @@ class Months with ChangeNotifier {
   Month getCurrentMonth() {
     final curMonth = DateTime.now().month;
     final curYear = DateTime.now().year;
-    final currentMonth = _items.firstWhere((m) => m.year == curYear && m.number == curMonth);
-    print(currentMonth.name);
-    return currentMonth;
+    final currentMonth = _items.firstWhere(
+        (m) => m.year == curYear && m.number == curMonth,
+        orElse: () => null);
 
+    return currentMonth;
   }
 }
