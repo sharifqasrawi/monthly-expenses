@@ -7,6 +7,10 @@ import '../screens/month_update_screen.dart';
 import '../screens/payments.screen.dart';
 
 class MonthItem extends StatelessWidget {
+  final currency;
+
+  MonthItem({this.currency});
+
   @override
   Widget build(BuildContext context) {
     final month = Provider.of<Month>(context, listen: false);
@@ -128,7 +132,7 @@ class MonthItem extends StatelessWidget {
             subtitle: Row(
               children: <Widget>[
                 Text(
-                  '${month.amountLeft.toStringAsFixed(2)}€',
+                  '${month.amountLeft.toStringAsFixed(2)}$currency',
                   style: const TextStyle(
                       fontWeight: FontWeight.bold, color: Colors.red),
                 ),
@@ -136,7 +140,7 @@ class MonthItem extends StatelessWidget {
                   width: 20,
                 ),
                 Text(
-                  '${month.amount.toStringAsFixed(2)}€',
+                  '${month.amount.toStringAsFixed(2)}$currency',
                   style: const TextStyle(color: Colors.green),
                 ),
               ],

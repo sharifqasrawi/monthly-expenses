@@ -7,6 +7,10 @@ import '../providers/payment.dart';
 import '../providers/payments.dart';
 
 class PaymentItem extends StatelessWidget {
+  final currency;
+
+  PaymentItem({this.currency});
+
   @override
   Widget build(BuildContext context) {
     final payment = Provider.of<Payment>(context, listen: false);
@@ -75,7 +79,7 @@ class PaymentItem extends StatelessWidget {
                 padding: const EdgeInsets.all(10),
                 child: FittedBox(
                   child: Text(
-                    '${payment.amount.toStringAsFixed(2)}€',
+                    '${payment.amount.toStringAsFixed(2)}$currency',
                     style: const TextStyle(fontSize: 16),
                   ),
                 ),

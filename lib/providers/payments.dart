@@ -23,7 +23,8 @@ class Payments with ChangeNotifier {
   }
 
   Future<void> fetchAndSetPayments() async {
-    final url = 'https://monthly-expenses-d56f8.firebaseio.com/payments.json?auth=$authToken';
+    final url =
+        'https://monthly-expenses-d56f8.firebaseio.com/payments.json?auth=$authToken';
     try {
       final response = await http.get(url);
 
@@ -53,7 +54,8 @@ class Payments with ChangeNotifier {
   }
 
   Future<void> addPayment(Payment payment) async {
-    final url = 'https://monthly-expenses-d56f8.firebaseio.com/payments.json?auth=$authToken';
+    final url =
+        'https://monthly-expenses-d56f8.firebaseio.com/payments.json?auth=$authToken';
     try {
       final createdAt = DateTime.now();
       final response = await http.post(
@@ -98,9 +100,11 @@ class Payments with ChangeNotifier {
     if (response.statusCode >= 400) {
       _payments.insert(existingPaymentIndex, existingPayment);
       notifyListeners();
+
       throw HttpException(
-          message: 'An Error occured while deleting this month');
+          message: 'An Error occured while deleting this payment');
     }
+
     existingPayment = null;
   }
 }

@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../providers/months.dart';
 import '../providers/payments.dart';
+import '../providers/settings.dart';
 import '../widgets/payment_add.dart';
 import '../widgets/payments_list.dart';
 
@@ -16,7 +17,7 @@ class PaymentsScreen extends StatefulWidget {
 class _PaymentsScreenState extends State<PaymentsScreen> {
   var _isLoading = false;
   var _isInit = true;
-
+  var currency = '';
   Future<void> _fetchData() async {
     await Provider.of<Payments>(context).fetchAndSetPayments();
   }
@@ -33,6 +34,7 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
         });
       });
     }
+    currency = Provider.of<Settings>(context, listen: false).getSettingValue('currency');
     _isInit = false;
     super.didChangeDependencies();
   }
@@ -115,14 +117,14 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: <Widget>[
                               Text(
-                                '${amountLeft.toStringAsFixed(2)}€',
+                                '${amountLeft.toStringAsFixed(2)}$currency',
                                 style: const TextStyle(
                                   fontSize: 28,
                                   color: Colors.white,
                                 ),
                               ),
                               Text(
-                                '${amount.toStringAsFixed(2)} €',
+                                '${amount.toStringAsFixed(2)}$currency',
                                 style: const TextStyle(
                                   fontSize: 28,
                                   color: Colors.red,
@@ -147,6 +149,7 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
                             payments: payments,
                             amount: amount,
                             amountLeft: amountLeft,
+                            currency: currency,
                           ),
                   ),
                 ],

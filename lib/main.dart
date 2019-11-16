@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-
 import './screens/months_screen.dart';
 import './screens/payments.screen.dart';
 import './screens/month_add_screen.dart';
@@ -9,9 +8,12 @@ import './screens/month_update_screen.dart';
 import './screens/home_screen.dart';
 import './screens/splash_screen.dart';
 import './screens/auth_screen.dart';
+import './screens/settings_screen.dart';
+import './screens/statistics_screen.dart';
 import './providers/months.dart';
 import './providers/payments.dart';
 import './providers/auth.dart';
+import './providers/settings.dart';
 
 void main() => runApp(MyApp());
 
@@ -35,6 +37,13 @@ class MyApp extends StatelessWidget {
             auth.token,
             auth.userId,
             prevPayments == null ? [] : prevPayments.payments,
+          ),
+        ),
+        ChangeNotifierProxyProvider<Auth, Settings>(
+          builder: (ctx, auth, prevSettings) => Settings(
+            auth.token,
+            auth.userId,
+            prevSettings == null ? [] : prevSettings.settings,
           ),
         ),
       ],
@@ -76,6 +85,8 @@ class MyApp extends StatelessWidget {
             PaymentsScreen.routeName: (_) => PaymentsScreen(),
             MonthAddScreen.routeName: (_) => MonthAddScreen(),
             MonthUpdateScreen.routeName: (_) => MonthUpdateScreen(),
+            SettingsScreen.routeName: (_) => SettingsScreen(),
+            Statistics.routeName: (_) =>Statistics(),
           },
         ),
       ),

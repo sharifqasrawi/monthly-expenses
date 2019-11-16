@@ -5,6 +5,10 @@ import '../providers/months.dart';
 import './month_item.dart';
 
 class MonthsList extends StatelessWidget {
+  final currency;
+
+  MonthsList({this.currency});
+
   @override
   Widget build(BuildContext context) {
     final monthsContainer = Provider.of<Months>(context);
@@ -17,7 +21,7 @@ class MonthsList extends StatelessWidget {
         itemCount: months.length,
         itemBuilder: (ctx, idx) => ChangeNotifierProvider.value(
           value: months[idx],
-          child: MonthItem(),
+          child: MonthItem(currency: currency),
         ),
       ),
     );

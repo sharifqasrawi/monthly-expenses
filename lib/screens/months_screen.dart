@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/months.dart';
+import '../providers/settings.dart';
 import '../widgets/drawer.dart';
 import '../widgets/months_list.dart';
 
@@ -14,6 +15,7 @@ class MonthsScreen extends StatefulWidget {
 
 class _MonthsScreenState extends State<MonthsScreen> {
   var _currentYear = 1;
+  var currency = '';
 
   @override
   Widget build(BuildContext context) {
@@ -77,8 +79,11 @@ class _MonthsScreenState extends State<MonthsScreen> {
                     ),
                   );
                 } else {
+                  currency = Provider.of<Settings>(context, listen: false)
+                      .getSettingValue('currency');
                   return Consumer<Months>(
-                    builder: (ctx, monthData, child) => MonthsList(),
+                    builder: (ctx, monthData, child) =>
+                        MonthsList(currency: currency),
                   );
                 }
               }

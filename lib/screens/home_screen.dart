@@ -10,6 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../providers/month.dart';
 import '../providers/months.dart';
+import '../providers/settings.dart';
 import '../widgets/drawer.dart';
 import './month_add_screen.dart';
 //import './months_screen.dart';
@@ -25,6 +26,7 @@ class _HomeScreenState extends State<HomeScreen> {
   var _isLoading = false;
   var monthName;
   var email = '';
+  var currency = '';
 
   @override
   void didChangeDependencies() {
@@ -32,11 +34,15 @@ class _HomeScreenState extends State<HomeScreen> {
       setState(() {
         _isLoading = true;
       });
-      Provider.of<Months>(context, listen: false)
-          .fetchAndSetMonths(1)
-          .then((_) {
-        setState(() {
-          _isLoading = false;
+      Provider.of<Settings>(context, listen: false).getUserSettings().then((_) {
+        currency = Provider.of<Settings>(context, listen: false)
+            .getSettingValue('currency');
+        Provider.of<Months>(context, listen: false)
+            .fetchAndSetMonths(1)
+            .then((_) {
+          setState(() {
+            _isLoading = false;
+          });
         });
       });
 
@@ -203,7 +209,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                             height: 20,
                                           ),
                                           Text(
-                                            'Left: ${month.amountLeft.toStringAsFixed(2)}€',
+                                            'Left: ${month.amountLeft.toStringAsFixed(2)}$currency',
                                             style: TextStyle(
                                               color: Colors.white,
                                               fontSize: 24,
@@ -213,7 +219,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                             height: 20,
                                           ),
                                           Text(
-                                            'Spent: ${(month.amount - month.amountLeft).toStringAsFixed(2)}€',
+                                            'Spent: ${(month.amount - month.amountLeft).toStringAsFixed(2)}$currency',
                                             style: TextStyle(
                                               color: Colors.lime,
                                               fontSize: 22,
@@ -223,7 +229,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                             height: 20,
                                           ),
                                           Text(
-                                            'Income: ${month.amount.toStringAsFixed(2)}€',
+                                            'Income: ${month.amount.toStringAsFixed(2)}$currency',
                                             style: TextStyle(
                                               color: Colors.white38,
                                               fontSize: 22,

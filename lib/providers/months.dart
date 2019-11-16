@@ -56,7 +56,7 @@ class Months with ChangeNotifier {
 
       extractedData.forEach((id, data) {
         if (id == 'error') {
-          print('Error in fetch');
+         // print('Error in fetch');
           return;
         }
         loadedMonths.add(
@@ -82,6 +82,7 @@ class Months with ChangeNotifier {
         _items = loadedMonths;
       }
       //print(loadedMonths.length);
+      
 
       notifyListeners();
     } catch (error) {

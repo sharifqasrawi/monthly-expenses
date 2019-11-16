@@ -7,6 +7,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../providers/auth.dart';
 import '../screens/month_add_screen.dart';
 import '../screens/months_screen.dart';
+import '../screens/settings_screen.dart';
+import '../screens/statistics_screen.dart';
 
 class AppDrawer extends StatefulWidget {
   @override
@@ -41,7 +43,7 @@ class _AppDrawerState extends State<AppDrawer> {
     return Drawer(
       child: Container(
         color: Color.fromRGBO(255, 187, 143, 1),
-        child: Column(
+        child: ListView(
           children: <Widget>[
             AppBar(
               title: Row(
@@ -85,8 +87,27 @@ class _AppDrawerState extends State<AppDrawer> {
             ),
             Divider(),
             ListTile(
+              leading: Icon(Icons.insert_chart),
+              title: const Text('Statistics'),
+              onTap: () {
+                Navigator.of(context).pop();
+                Navigator.of(context).pushNamed(Statistics.routeName);
+              },
+            ),
+            Divider(),
+            ListTile(
+              leading: Icon(Icons.settings_applications),
+              title: const Text('Settings'),
+              onTap: () {
+                Navigator.of(context).pop();
+                Navigator.of(context)
+                    .pushReplacementNamed(SettingsScreen.routeName);
+              },
+            ),
+            Divider(),
+            ListTile(
               leading: Icon(Icons.exit_to_app),
-              title: Text('Logout'),
+              title: const Text('Logout'),
               onTap: () {
                 Navigator.of(context).pop();
                 Navigator.of(context).pushReplacementNamed('/');

@@ -9,11 +9,13 @@ class PaymentsList extends StatefulWidget {
   final List<Payment> payments;
   final double amount;
   final double amountLeft;
+  final currency;
 
   PaymentsList({
     this.payments,
     this.amount,
     this.amountLeft,
+    this.currency,
   });
 
   @override
@@ -53,7 +55,7 @@ class _PaymentsListState extends State<PaymentsList> {
               itemCount: widget.payments.length,
               itemBuilder: (ctx, idx) => ChangeNotifierProvider.value(
                 value: widget.payments[idx],
-                child: PaymentItem(),
+                child: PaymentItem(currency: widget.currency,),
               ),
             )
           : Center(
