@@ -8,7 +8,7 @@ import '../providers/auth.dart';
 import '../screens/month_add_screen.dart';
 import '../screens/months_screen.dart';
 import '../screens/settings_screen.dart';
-import '../screens/statistics_screen.dart';
+//import '../screens/statistics_screen.dart';
 
 class AppDrawer extends StatefulWidget {
   @override
@@ -85,15 +85,15 @@ class _AppDrawerState extends State<AppDrawer> {
                     .pushReplacementNamed(MonthAddScreen.routeName);
               },
             ),
-            Divider(),
-            ListTile(
-              leading: Icon(Icons.insert_chart),
-              title: const Text('Statistics'),
-              onTap: () {
-                Navigator.of(context).pop();
-                Navigator.of(context).pushNamed(Statistics.routeName);
-              },
-            ),
+            // Divider(),
+            // ListTile(
+            //   leading: Icon(Icons.insert_chart),
+            //   title: const Text('Statistics'),
+            //   onTap: () {
+            //     Navigator.of(context).pop();
+            //     Navigator.of(context).pushNamed(Statistics.routeName);
+            //   },
+            // ),
             Divider(),
             ListTile(
               leading: Icon(Icons.settings_applications),
@@ -101,8 +101,21 @@ class _AppDrawerState extends State<AppDrawer> {
               onTap: () {
                 Navigator.of(context).pop();
                 Navigator.of(context)
-                    .pushReplacementNamed(SettingsScreen.routeName);
+                    .pushNamed(SettingsScreen.routeName);
               },
+            ),
+            Divider(),
+            AboutListTile(
+              icon: const Icon(Icons.info),
+              child: const Text('About'),
+              applicationName: 'Monthly Expenses',
+              applicationLegalese: 'Developed by Sharif Qasrawi',
+              applicationVersion: 'V.1.0.0',
+              applicationIcon: Image.asset(
+                'dev_assets/icon.png',
+                width: 50,
+                height: 50,
+              ),
             ),
             Divider(),
             ListTile(

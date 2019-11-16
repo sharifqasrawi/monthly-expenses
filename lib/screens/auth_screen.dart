@@ -1,9 +1,11 @@
 //import 'dart:convert';
 
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 //import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/http_exception.dart';
@@ -95,6 +97,9 @@ class AuthCard extends StatefulWidget {
 class _AuthCardState extends State<AuthCard> {
   final GlobalKey<FormState> _formKey = GlobalKey();
   AuthMode _authMode = AuthMode.Login;
+  var _emailController = TextEditingController();
+  var _isInit = true;
+
   Map<String, String> _authData = {
     'email': '',
     'password': '',
@@ -103,22 +108,22 @@ class _AuthCardState extends State<AuthCard> {
   // var _isInit = true;
   final _passwordController = TextEditingController();
 
-  // @override
-  // void didChangeDependencies() {
-  //   if (_isInit) {
-  //     Future.delayed(Duration.zero).then((_) async {
-  //       final prefs = await SharedPreferences.getInstance();
-  //         if (prefs.containsKey('userCred')) {
-  //         final extractedUserData =
-  //             json.decode(prefs.getString('userCred')) as Map<String, Object>;
-  //         _authData['email'] = extractedUserData['email'];
-  //         _authData['password'] = extractedUserData['password'];
-  //       }
-  //     });
-  //   }
-  //   _isInit = false;
-  //   super.didChangeDependencies();
-  // }
+  @override
+  void didChangeDependencies() {
+    if (_isInit) {
+      Future.delayed(Duration.zero).then((_) async {
+        final prefs = await SharedPreferences.getInstance();
+        if (prefs.containsKey('userCred')) {
+          final extractedUserData =
+              json.decode(prefs.getString('userCred')) as Map<String, Object>;
+          _emailController.text = extractedUserData['email'];
+          _passwordController.text = extractedUserData['password'];
+        }
+      });
+    }
+    _isInit = false;
+    super.didChangeDependencies();
+  }
 
   void _showErrorDialog(String message) {
     showDialog(
@@ -155,14 +160,18 @@ class _AuthCardState extends State<AuthCard> {
           _authData['password'],
         );
 
-        // if (saveCred) {
-        //   var prefs = await SharedPreferences.getInstance();
-        //   final userCred = json.encode({
-        //     'email': _authData['email'],
-        //     'password': _authData['password'],
-        //   });
-        //   prefs.setString('userCred', userCred);
-        // }
+        var prefs = await SharedPreferences.getInstance();
+        if (saveCred) {
+          final userCred = json.encode({
+            'email': _authData['email'],
+            'password': _authData['password'],
+          });
+          prefs.setString('userCred', userCred);
+        } else {
+          if (prefs.containsKey('userCred')) {
+            prefs.remove('userCred');
+          }
+        }
       } else {
         // Sign user up
         await Provider.of<Auth>(context, listen: false).signup(
@@ -198,6 +207,8 @@ class _AuthCardState extends State<AuthCard> {
   void _switchAuthMode() {
     if (_authMode == AuthMode.Login) {
       setState(() {
+        _emailController.clear();
+        _passwordController.clear();
         _authMode = AuthMode.Signup;
       });
     } else {
@@ -252,6 +263,7 @@ class _AuthCardState extends State<AuthCard> {
             child: Column(
               children: <Widget>[
                 TextFormField(
+                  controller: _emailController,
                   decoration: InputDecoration(
                     labelText: 'E-Mail',
                     labelStyle: TextStyle(
@@ -261,7 +273,6 @@ class _AuthCardState extends State<AuthCard> {
                   ),
                   style: TextStyle(color: Colors.white),
                   keyboardType: TextInputType.emailAddress,
-                  //initialValue: _authData['email'] == null ? '' : _authData['email'] ?? '',
                   validator: _validateEmail,
                   onSaved: (value) {
                     _authData['email'] = value;
@@ -280,7 +291,6 @@ class _AuthCardState extends State<AuthCard> {
                     color: Colors.white,
                   ),
                   controller: _passwordController,
-                  // initialValue: _authData['password'] == null ? '' : _authData['password'] ?? '' ,
                   validator: (value) {
                     if (value.isEmpty || value.length < 5) {
                       return 'Password is too short!';
@@ -296,7 +306,10 @@ class _AuthCardState extends State<AuthCard> {
                     enabled: _authMode == AuthMode.Signup,
                     decoration: InputDecoration(
                       labelText: 'Confirm Password',
-                      labelStyle: TextStyle(color: Colors.white),
+                      labelStyle: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     obscureText: true,
                     style: TextStyle(color: Colors.white),
@@ -318,22 +331,25 @@ class _AuthCardState extends State<AuthCard> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: <Widget>[
-                      // if (_authMode == AuthMode.Login)
-                      //   RaisedButton(
-                      //     child: Text(
-                      //       'LOGIN & SAVE',
-                      //       softWrap: true,
-                      //     ),
-                      //     onPressed: () => _submit(true),
-                      //     shape: RoundedRectangleBorder(
-                      //       borderRadius: BorderRadius.circular(30),
-                      //     ),
-                      //     padding: EdgeInsets.symmetric(
-                      //         horizontal: 30.0, vertical: 8.0),
-                      //     color: Theme.of(context).primaryColor,
-                      //     textColor:
-                      //         Theme.of(context).primaryTextTheme.button.color,
-                      //   ),
+                      if (_authMode == AuthMode.Login)
+                        RaisedButton(
+                          child: Text(
+                            'LOGIN & SAVE',
+                            softWrap: true,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          onPressed: () => _submit(true),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 30.0, vertical: 8.0),
+                          color: Theme.of(context).primaryColor,
+                          textColor:
+                              Theme.of(context).primaryTextTheme.button.color,
+                        ),
                       RaisedButton(
                         child: Text(
                           _authMode == AuthMode.Login ? 'LOGIN' : 'SIGN UP',

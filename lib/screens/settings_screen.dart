@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 
 import '../providers/setting.dart';
 import '../providers/settings.dart';
-import '../widgets/drawer.dart';
 
 class SettingsScreen extends StatefulWidget {
   static const routeName = '/settings';
@@ -96,8 +95,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
             onPressed: _isLoading ? null : _saveForm,
           ),
         ],
+        automaticallyImplyLeading: true,
       ),
-      drawer: AppDrawer(),
       body: Stack(
         children: <Widget>[
           Container(

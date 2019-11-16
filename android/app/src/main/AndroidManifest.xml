@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.monthly_expenses">
+    package="com.qassharifrawi.monthly_expenses">
 
     <!-- io.flutter.app.FlutterApplication is an android.app.Application that
          calls FlutterMain.startInitialization(this); in its onCreate method.
@@ -30,5 +30,8 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+
+        <meta-data android:name="com.google.android.gms.ads.APPLICATION_ID" 
+            android:value="ca-app-pub-9231304976128778~8538733718"/>
     </application>
 </manifest>

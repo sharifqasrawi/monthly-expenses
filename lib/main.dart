@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_admob/firebase_admob.dart';
 
 import './screens/months_screen.dart';
 import './screens/payments.screen.dart';
@@ -20,6 +21,11 @@ void main() => runApp(MyApp());
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+
+    FirebaseAdMob.instance.initialize(appId: 'ca-app-pub-3940256099942544/6300978111').then((response){
+      myBanner..load()..show();
+    });  
+
     return MultiProvider(
       providers: [
         ChangeNotifierProvider.value(
@@ -93,3 +99,24 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
+MobileAdTargetingInfo targetingInfo = MobileAdTargetingInfo(
+  keywords: <String>['expenses', 'monthly', 'money', 'calculator'],
+  contentUrl: 'https://flutter.io',
+  
+  childDirected: false,
+ // or MobileAdGender.female, MobileAdGender.unknown
+  testDevices: <String>[], // Android emulators are considered test devices
+);
+
+BannerAd myBanner = BannerAd(
+  // Replace the testAdUnitId with an ad unit id from the AdMob dash.
+  // https://developers.google.com/admob/android/test-ads
+  // https://developers.google.com/admob/ios/test-ads
+  adUnitId: 'ca-app-pub-9231304976128778/9472186217',
+  size: AdSize.smartBanner,
+  targetingInfo: targetingInfo,
+  listener: (MobileAdEvent event) {
+    print("BannerAd event is $event");
+  },
+);

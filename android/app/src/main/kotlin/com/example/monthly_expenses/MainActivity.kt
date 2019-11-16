@@ -1,4 +1,4 @@
-package com.example.monthly_expenses
+package com.qassharifrawi.monthly_expenses
 
 import android.os.Bundle
 
