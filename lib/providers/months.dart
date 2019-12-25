@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -44,47 +45,49 @@ class Months with ChangeNotifier {
         'https://monthly-expenses-d56f8.firebaseio.com/months.json?auth=$authToken&orderBy="userId"&equalTo="$userId"';
 
     try {
-      final response = await http.get(url);
+    //  Timer.periodic(Duration(seconds: 1), (t) async {
+        final response = await http.get(url);
 
-      final extractedData = json.decode(response.body) as Map<String, dynamic>;
+        final extractedData =
+            json.decode(response.body) as Map<String, dynamic>;
 
-      final List<Month> loadedMonths = [];
+        final List<Month> loadedMonths = [];
 
-      if (extractedData == null) {
-        return;
-      }
-
-      extractedData.forEach((id, data) {
-        if (id == 'error') {
-         // print('Error in fetch');
+        if (extractedData == null) {
           return;
         }
-        loadedMonths.add(
-          Month(
-            id: id,
-            name: data['monthName'],
-            number: data['monthNumber'],
-            amount: data['amount'],
-            amountLeft: data['amountLeft'],
-            year: data['year'],
-            createdAt: DateTime.parse(data['createdAt']),
-          ),
-        );
-      });
 
-      if (currentYear == 1) {
-        _items =
-            loadedMonths.where((m) => m.year == DateTime.now().year).toList();
-        _items.sort((a, b) => a.number.compareTo(b.number));
-      } else {
-        loadedMonths.sort((a, b) => a.number.compareTo(b.number));
-        loadedMonths.sort((a, b) => a.year.compareTo(b.year));
-        _items = loadedMonths;
-      }
-      //print(loadedMonths.length);
-      
+        extractedData.forEach((id, data) {
+          if (id == 'error') {
+            // print('Error in fetch');
+            return;
+          }
+          loadedMonths.add(
+            Month(
+              id: id,
+              name: data['monthName'],
+              number: data['monthNumber'],
+              amount: data['amount'],
+              amountLeft: data['amountLeft'],
+              year: data['year'],
+              createdAt: DateTime.parse(data['createdAt']),
+            ),
+          );
+        });
 
-      notifyListeners();
+        if (currentYear == 1) {
+          _items =
+              loadedMonths.where((m) => m.year == DateTime.now().year).toList();
+          _items.sort((a, b) => a.number.compareTo(b.number));
+        } else {
+          loadedMonths.sort((a, b) => a.number.compareTo(b.number));
+          loadedMonths.sort((a, b) => a.year.compareTo(b.year));
+          _items = loadedMonths;
+        }
+        //print(loadedMonths.length);
+
+        notifyListeners();
+    //  });
     } catch (error) {
       //print('error here');
       throw error;
@@ -96,7 +99,7 @@ class Months with ChangeNotifier {
       final url =
           'https://monthly-expenses-d56f8.firebaseio.com/months.json?auth=$authToken';
 
-     // month.userId = userId;
+      // month.userId = userId;
 
       if (isMonthExists(month.year, month.number, false)) {
         return;

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -19,7 +21,7 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
   var _isInit = true;
   var currency = '';
   Future<void> _fetchData() async {
-    await Provider.of<Payments>(context).fetchAndSetPayments();
+    await Provider.of<Payments>(context, listen: false).fetchAndSetPayments();
   }
 
   @override
@@ -34,7 +36,8 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
         });
       });
     }
-    currency = Provider.of<Settings>(context, listen: false).getSettingValue('currency');
+    currency = Provider.of<Settings>(context, listen: false)
+        .getSettingValue('currency');
     _isInit = false;
     super.didChangeDependencies();
   }
@@ -43,9 +46,11 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
     final monthId = ModalRoute.of(context).settings.arguments as String;
-    final month = Provider.of<Months>(context).findById(monthId);
+    final month = Provider.of<Months>(context,listen: false).findById(monthId);
     final amount = month.amount;
     final amountLeft = month.amountLeft;
+
+    //new Timer.periodic(Duration(seconds: 1), (t) => _fetchData());
 
     final payments =
         Provider.of<Payments>(context).getPaymentsByMonthId(monthId);
@@ -80,15 +85,6 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
             image: AssetImage('assets/images/bg.png'),
             fit: BoxFit.cover,
           ),
-          // gradient: LinearGradient(
-          //   colors: [
-          //     Color.fromRGBO(215, 117, 255, 1).withOpacity(0.5),
-          //     Color.fromRGBO(255, 188, 117, 1).withOpacity(0.9),
-          //   ],
-          //   begin: Alignment.topLeft,
-          //   end: Alignment.bottomRight,
-          //   stops: [0, 1],
-          // ),
         ),
         child: RefreshIndicator(
           onRefresh: _fetchData,

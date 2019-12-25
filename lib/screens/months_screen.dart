@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -79,6 +81,10 @@ class _MonthsScreenState extends State<MonthsScreen> {
                     ),
                   );
                 } else {
+                  Timer.periodic(
+                      Duration(milliseconds: 500),
+                      (t) => Provider.of<Months>(context, listen: false)
+                          .fetchAndSetMonths(_currentYear));
                   currency = Provider.of<Settings>(context, listen: false)
                       .getSettingValue('currency');
                   return Consumer<Months>(

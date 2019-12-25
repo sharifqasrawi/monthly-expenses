@@ -31,7 +31,7 @@
             </intent-filter>
         </activity>
 
-        <meta-data android:name="com.google.android.gms.ads.APPLICATION_ID" 
-            android:value="ca-app-pub-9231304976128778~8538733718"/>
+        <!-- <meta-data android:name="com.google.android.gms.ads.APPLICATION_ID" 
+            android:value="ca-app-pub-9231304976128778~8538733718"/> -->
     </application>
 </manifest>
